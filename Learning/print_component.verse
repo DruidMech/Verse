@@ -8,26 +8,33 @@ print_component<public> := class<final_super>(component):
 
     var Descendants : []entity = array{}
     var Ancestors : []entity = array{}
-    IntArray : []int = array{ 1, 2, 3, 4, 5 }
+    var IntArray : []int = array{}
 
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
 
-        for (Desc : Entity.FindDescendantEntities(entity)):
-            set Descendants += array{Desc}
+        set Descendants = for (Desc : Entity.FindDescendantEntities(entity)):
+            Desc
 
-        for (Anc : Entity.FindAncestorEntities(entity)):
-            set Ancestors += array{Anc}
+        set Ancestors = for (Anc : Entity.FindAncestorEntities(entity)) do Anc
 
-        Print("Printing Descendants: ")
+        Print("Printing Descendants and their parents: ")
 
-        for (Desc : Descendants):
-            Print("Descendant: " + ToDiagnostic(Desc))
+        for:
+            Desc : Descendants
+            Parent := Desc.GetParent[]
+        do:
+            Print("Descendant: " + ToDiagnostic(Desc) + " Parent: " + ToDiagnostic(Parent))
 
-        Print("Printing Ancestors: ")
+        Print("Printing Ancestors and their parents: ")
 
-        for (Anc : Ancestors):
-            Print("Ancestor: " + ToDiagnostic(Anc))
+        for:
+            Anc : Ancestors
+            Parent := Anc.GetParent[]
+        do:
+            Print("Ancestor: " + ToDiagnostic(Anc) + " Parent: " + ToDiagnostic(Parent))
+
+        set IntArray = for (I := 1..10) do I
 
         for (I -> Elem : IntArray):
             Print("IntArray[{I}]: {Elem}")
