@@ -6,15 +6,21 @@ using { /Verse.org/Simulation }
 # This component is for learning how to print messages to the log.
 print_component<public> := class<final_super>(component):
 
+    var AncestorMap : [entity]?entity = map{}
+
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
 
-        AncestorsAndParents : []tuple(entity, ?entity) = for (Anc : Entity.FindAncestorEntities(entity)):
-            MaybeParent := option{Anc.GetParent[]}
-            (Anc, MaybeParent)
+        for:
+            Anc : Entity.FindAncestorEntities of entity
+            set AncestorMap[Anc] = option{Anc.GetParent[]}
 
-        for (Pair : AncestorsAndParents):
-            if (Parent := Pair(1)?):
-                Print("Ancestor: " + ToDiagnostic(Pair(0)) + "Parent: " + ToDiagnostic(Parent))
+        for (Ent->MaybeParent : AncestorMap):
+            if (Parent is MaybeParent?):
+                Print of "Ancestor has parent."
             else:
-                Print("Ancestor: " + ToDiagnostic(Pair(0)))
+                Print of "Ancestor has no parent."
+
+
+        
+        
