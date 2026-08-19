@@ -19,8 +19,15 @@ debug_draw_component<public> := class<final_super>(component):
 
         Loc := Entity.GetGlobalTransform().Translation
         ElevatedLoc := vector3{ Left:=Loc.Left, Up:=Loc.Up + 100.0, Forward:=Loc.Forward }
-        
-        DebugDraw.DrawSphere(Loc, ?Color := DrawColor)
+
+        DebugDraw.DrawSphere(
+            ElevatedLoc, 
+            ?Radius := 50.0, 
+            ?Color := DrawColor, 
+            ?NumSegments := 12, 
+            ?Thickness := 1.0, 
+            ?DrawDurationPolicy := debug_draw_duration_policy.FiniteDuration, 
+            ?Duration := 600.0)
 
 
 
