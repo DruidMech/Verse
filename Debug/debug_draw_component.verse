@@ -19,13 +19,37 @@ debug_draw_component<public> := class<final_super>(component):
 
     @editable
     Shape : draw_shape = draw_shape.Box
+
+    @editable
+    DurationPolicy : debug_draw_duration_policy = debug_draw_duration_policy.Persistent
   
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
 
+        DrawShape()
+
+        Loc := Entity.GetGlobalTransform().Translation
+        Rot := Entity.GetGlobalTransform().Rotation
+
+        NewLocation := vector3:
+            Left := Loc.Left
+            Up := Loc.Up + 500.0
+            Forward := Loc.Forward
+
+        DrawShape(NewLocation, Rot)
+
+    DrawShape():void=
         Loc := Entity.GetGlobalTransform().Translation
         Rot := Entity.GetGlobalTransform().Rotation
 
         case(Shape):
-            draw_shape.Sphere => DebugDraw.DrawSphere(Loc)
-            draw_shape.Box => DebugDraw.DrawBox(Loc, Rot)
+            draw_shape.Sphere => DebugDraw.DrawSphere(Loc, ?DrawDurationPolicy := DurationPolicy)
+            draw_shape.Box => DebugDraw.DrawBox(Loc, Rot, ?DrawDurationPolicy := DurationPolicy)
+
+    DrawShape(Location:vector3, Rotation:rotation):void=
+        case(Shape):
+            draw_shape.Sphere => DebugDraw.DrawSphere(Location, ?DrawDurationPolicy := DurationPolicy)
+            draw_shape.Box => DebugDraw.DrawBox(Location, Rotation, ?DrawDurationPolicy := DurationPolicy)
+
+
+
