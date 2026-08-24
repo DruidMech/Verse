@@ -38,18 +38,19 @@ debug_draw_component<public> := class<final_super>(component):
 
         DrawShape(NewLocation, Rot)
 
+    # DRY - Don't Repeat Yourself
+    # Refactoring
+
     DrawShape():void=
         Loc := Entity.GetGlobalTransform().Translation
         Rot := Entity.GetGlobalTransform().Rotation
 
-        case(Shape):
-            draw_shape.Sphere => DebugDraw.DrawSphere(Loc, ?DrawDurationPolicy := DurationPolicy)
-            draw_shape.Box => DebugDraw.DrawBox(Loc, Rot, ?DrawDurationPolicy := DurationPolicy)
+        DrawShape(Loc, Rot, DurationPolicy)
 
     DrawShape(Location:vector3, Rotation:rotation):void=
+        DrawShape(Location, Rotation, DurationPolicy)
+
+    DrawShape(Location:vector3, Rotation:rotation, Policy:debug_draw_duration_policy):void=
         case(Shape):
-            draw_shape.Sphere => DebugDraw.DrawSphere(Location, ?DrawDurationPolicy := DurationPolicy)
-            draw_shape.Box => DebugDraw.DrawBox(Location, Rotation, ?DrawDurationPolicy := DurationPolicy)
-
-
-
+            draw_shape.Sphere => DebugDraw.DrawSphere(Location, ?DrawDurationPolicy := Policy)
+            draw_shape.Box => DebugDraw.DrawBox(Location, Rotation, ?DrawDurationPolicy := Policy)
