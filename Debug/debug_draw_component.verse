@@ -34,28 +34,20 @@ debug_draw_component<public> := class<final_super>(component):
         Rot is GetRot()
         Pol is DurationPolicy
         (Loc, Rot, Pol)
-  
-    OnBeginSimulation<override>():void =
-        (super:)OnBeginSimulation()
 
-        DrawShape()
-
-        Loc := Entity.GetGlobalTransform().Translation
-        Rot := Entity.GetGlobalTransform().Rotation
-
-        NewLocation := vector3:
-            Left := Loc.Left
-            Up := Loc.Up + 500.0
-            Forward := Loc.Forward
-
-        DrawShape(NewLocation, Rot)
-
-    DrawShape():void = DrawShape(GetLocRotPol())
+    DrawShape<public>():void = DrawShape(GetLocRotPol())
 
     DrawShape(Location:vector3, Rotation:rotation):void=
         DrawShape(Location, Rotation, DurationPolicy)
 
     DrawShape(Location:vector3, Rotation:rotation, Policy:debug_draw_duration_policy):void=
         case(Shape):
-            draw_shape.Sphere => DebugDraw.DrawSphere(Location, ?DrawDurationPolicy := Policy)
-            draw_shape.Box => DebugDraw.DrawBox(Location, Rotation, ?DrawDurationPolicy := Policy)
+            draw_shape.Sphere => DebugDraw.DrawSphere(
+                Location, 
+                ?DrawDurationPolicy := Policy, 
+                ?Color := DrawColor)
+            draw_shape.Box => DebugDraw.DrawBox(
+                Location, 
+                Rotation, 
+                ?DrawDurationPolicy := Policy,
+                ?Color := DrawColor)
