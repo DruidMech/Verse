@@ -29,6 +29,11 @@ debug_draw_component<public> := class<final_super>(component):
         Loc is GetLoc()
         Rot is GetRot()
         (Loc, Rot)
+    GetLocRotPol():tuple(vector3, rotation, debug_draw_duration_policy)=
+        Loc is GetLoc()
+        Rot is GetRot()
+        Pol is DurationPolicy
+        (Loc, Rot, Pol)
   
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
@@ -45,9 +50,7 @@ debug_draw_component<public> := class<final_super>(component):
 
         DrawShape(NewLocation, Rot)
 
-    DrawShape():void=
-        LocRot is GetLocRot()
-        DrawShape(LocRot of 0, LocRot of 1, DurationPolicy)
+    DrawShape():void = DrawShape(GetLocRotPol())
 
     DrawShape(Location:vector3, Rotation:rotation):void=
         DrawShape(Location, Rotation, DurationPolicy)
