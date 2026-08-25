@@ -22,6 +22,13 @@ debug_draw_component<public> := class<final_super>(component):
 
     @editable
     DurationPolicy : debug_draw_duration_policy = debug_draw_duration_policy.Persistent
+
+    GetLoc():vector3 = Entity.GetGlobalTransform().Translation
+    GetRot():rotation = Entity.GetGlobalTransform().Rotation
+    GetLocRot():tuple(vector3, rotation)=
+        Loc is GetLoc()
+        Rot is GetRot()
+        (Loc, Rot)
   
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
@@ -38,14 +45,9 @@ debug_draw_component<public> := class<final_super>(component):
 
         DrawShape(NewLocation, Rot)
 
-    # DRY - Don't Repeat Yourself
-    # Refactoring
-
     DrawShape():void=
-        Loc := Entity.GetGlobalTransform().Translation
-        Rot := Entity.GetGlobalTransform().Rotation
-
-        DrawShape(Loc, Rot, DurationPolicy)
+        LocRot is GetLocRot()
+        DrawShape(LocRot of 0, LocRot of 1, DurationPolicy)
 
     DrawShape(Location:vector3, Rotation:rotation):void=
         DrawShape(Location, Rotation, DurationPolicy)
