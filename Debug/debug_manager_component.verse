@@ -8,11 +8,19 @@ using. Debug
 
 debug_manager_component<public> := class<final_super>(component):
 
-    OnBeginSimulation<override>():void =
-        (super:)OnBeginSimulation()
-
+    DrawDescendantShapes():void=
         for:
             Ent : Entity.FindDescendantEntitiesWithComponent(debug_draw_component)
             Comp := Ent.GetComponent[debug_draw_component]
         do:
             Comp.DrawShape()
+
+    OnSimulate<override>()<suspends>:void=
+        loop:
+            DrawDescendantShapes()
+            Sleep(2.0)
+
+        
+
+
+
