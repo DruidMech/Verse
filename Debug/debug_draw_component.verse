@@ -15,7 +15,7 @@ debug_draw_component<public> := class<final_super>(component):
     DebugDraw : debug_draw = debug_draw{}
 
     @editable
-    DrawColor : color = color{}
+    var DrawColor<public> : color = color{}
 
     @editable
     Shape : draw_shape = draw_shape.Box
