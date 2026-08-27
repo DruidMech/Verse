@@ -22,10 +22,3 @@ print_component<public> := class<final_super>(component):
         PrintColor("Red", ?Color := NamedColors.Red)
         PrintColor("Aquamarine", ?Color := NamedColors.Aquamarine)
         PrintColor("Pink", ?Color := NamedColors.Pink, ?Duration := 60.0)
-
-        
-
-
-
-        
-        
