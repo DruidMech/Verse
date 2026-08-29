@@ -12,26 +12,44 @@ damage_volume_component<public> := class<final_super>(component):
 
     DebugDraw : debug_draw = debug_draw{}
 
-    var EnteredEntity : ?entity = false
+    var EnteredEntities : []entity = array{}
+
+    @editable
+    DamageInterval : float = 0.5
+
+    @editable
+    IsPeriodic : logic = true
 
     OnEntityEntered(InEntity:entity):void=
-        set EnteredEntity = option{InEntity}
+        if (IsPeriodic?):
+            set EnteredEntities += array{InEntity}
+        else:
+            DebugDraw.DrawSphere(
+                InEntity.GetGlobalTransform().Translation,
+                ?Color := NamedColors.Red,
+                ?DrawDurationPolicy := debug_draw_duration_policy.FiniteDuration,
+                ?Duration := 5.0,
+                ?Radius := 50.0)
 
     OnEntityExited(InEntity:entity):void=
-        set EnteredEntity = false
+        if (not IsPeriodic?). return
+        set EnteredEntities = for (EnteredEntity : EnteredEntities, EnteredEntity <> InEntity) do EnteredEntity
 
-    OnSimulate<override>()<suspends>:void=
+    DamageLoop()<suspends>:void=
         loop:
-            if (Ent := EnteredEntity?):
+            for (EnteredEntity : EnteredEntities):
                 DebugDraw.DrawSphere(
-                    Ent.GetGlobalTransform().Translation,
+                    EnteredEntity.GetGlobalTransform().Translation,
                     ?Color := NamedColors.Red,
                     ?DrawDurationPolicy := debug_draw_duration_policy.FiniteDuration,
                     ?Duration := 5.0,
                     ?Radius := 50.0)
+            
+            Sleep(DamageInterval)
 
-            Sleep(0.5)
-  
+    OnSimulate<override>()<suspends>:void=
+        DamageLoop()
+        
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
 
