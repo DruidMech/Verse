@@ -6,6 +6,7 @@ using { /Verse.org/SceneGraph }
 using { /Verse.org/Simulation }
 using { /UnrealEngine.com/Temporary/Diagnostics }
 using { /Verse.org/Colors }
+using { /Fortnite.com/Characters }
 
 # Designed to cause damage to players when they enter the volume
 damage_volume_component<public> := class<final_super>(component):
@@ -20,9 +21,16 @@ damage_volume_component<public> := class<final_super>(component):
     @editable
     IsPeriodic : logic = true
 
+    GetFortCharacter(InEntity:entity)<decides><reads>:fort_character=
+        FortChars :[]fort_character = for:
+            Comp : InEntity.GetComponents()
+            FortChar := fort_character[Comp]
+        FortChars at 0
+
     OnEntityEntered(InEntity:entity):void=
         if (IsPeriodic?):
-            set EnteredEntities += array{InEntity}
+            if (GetFortCharacter[InEntity]):
+                set EnteredEntities += array{InEntity}
         else:
             DebugDraw.DrawSphere(
                 InEntity.GetGlobalTransform().Translation,
