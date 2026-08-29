@@ -19,6 +19,9 @@ damage_volume_component<public> := class<final_super>(component):
     DamageInterval : float = 0.5
 
     @editable
+    DamageAmount : float = 5.0
+
+    @editable
     IsPeriodic : logic = true
 
     GetFortCharacter(InEntity:entity)<decides><reads>:fort_character=
@@ -27,17 +30,22 @@ damage_volume_component<public> := class<final_super>(component):
             FortChar := fort_character[Comp]
         FortChars at 0
 
-    OnEntityEntered(InEntity:entity):void=
-        if (IsPeriodic?):
-            if (GetFortCharacter[InEntity]):
-                set EnteredEntities += array{InEntity}
-        else:
+    CauseDamage(InEntity:entity, InDamage:float):void=
+        if (FortChar := GetFortCharacter[InEntity]):
+            FortChar.Damage(InDamage)
             DebugDraw.DrawSphere(
                 InEntity.GetGlobalTransform().Translation,
                 ?Color := NamedColors.Red,
                 ?DrawDurationPolicy := debug_draw_duration_policy.FiniteDuration,
                 ?Duration := 5.0,
                 ?Radius := 50.0)
+
+    OnEntityEntered(InEntity:entity):void=
+        if (IsPeriodic?):
+            if (GetFortCharacter[InEntity]):
+                set EnteredEntities += array{InEntity}
+        else:
+            CauseDamage(InEntity, DamageAmount)
 
     OnEntityExited(InEntity:entity):void=
         if (not IsPeriodic?). return
@@ -46,12 +54,7 @@ damage_volume_component<public> := class<final_super>(component):
     DamageLoop()<suspends>:void=
         loop:
             for (EnteredEntity : EnteredEntities):
-                DebugDraw.DrawSphere(
-                    EnteredEntity.GetGlobalTransform().Translation,
-                    ?Color := NamedColors.Red,
-                    ?DrawDurationPolicy := debug_draw_duration_policy.FiniteDuration,
-                    ?Duration := 5.0,
-                    ?Radius := 50.0)
+                CauseDamage(EnteredEntity, DamageAmount)
             
             Sleep(DamageInterval)
 
