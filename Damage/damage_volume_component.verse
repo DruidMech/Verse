@@ -11,15 +11,30 @@ using { /Verse.org/Colors }
 damage_volume_component<public> := class<final_super>(component):
 
     DebugDraw : debug_draw = debug_draw{}
+
+    var EnteredEntity : ?entity = false
+
+    OnEntityEntered(InEntity:entity):void=
+        set EnteredEntity = option{InEntity}
+
+    OnEntityExited(InEntity:entity):void=
+        set EnteredEntity = false
+
+    OnSimulate<override>()<suspends>:void=
+        loop:
+            if (Ent := EnteredEntity?):
+                DebugDraw.DrawSphere(
+                    Ent.GetGlobalTransform().Translation,
+                    ?Color := NamedColors.Red,
+                    ?DrawDurationPolicy := debug_draw_duration_policy.FiniteDuration,
+                    ?Duration := 5.0,
+                    ?Radius := 50.0)
+
+            Sleep(0.5)
   
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
 
-        for (Ent : Entity.FindDescendantEntitiesWithComponent(mesh_component)):
-            DebugDraw.DrawSphere(
-                Ent.GetGlobalTransform().Translation,
-                ?Color := NamedColors.Red,
-                ?DrawDurationPolicy := debug_draw_duration_policy.Persistent,
-                ?Radius := 50.0)
-
-
+        for (Comp : Entity.FindDescendantComponents(mesh_component)):
+            Comp.EntityEnteredEvent.Subscribe(OnEntityEntered)
+            Comp.EntityExitedEvent.Subscribe(OnEntityExited)
