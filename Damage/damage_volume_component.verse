@@ -64,6 +64,9 @@ damage_volume_component<public> := class<final_super>(component):
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
 
-        for (Comp : Entity.FindDescendantComponents(mesh_component)):
+        for:
+            Ent : Entity.FindDescendantEntitiesWithTag(overlap_volume)
+            Comp := Ent.GetComponent[mesh_component]
+        do:
             Comp.EntityEnteredEvent.Subscribe(OnEntityEntered)
             Comp.EntityExitedEvent.Subscribe(OnEntityExited)
