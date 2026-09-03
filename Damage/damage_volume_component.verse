@@ -8,6 +8,8 @@ using { /UnrealEngine.com/Temporary/Diagnostics }
 using { /Verse.org/Colors }
 using { /Fortnite.com/Characters }
 
+using. KontTags.Gameplay
+
 # Designed to cause damage to players when they enter the volume
 damage_volume_component<public> := class<final_super>(component):
 
