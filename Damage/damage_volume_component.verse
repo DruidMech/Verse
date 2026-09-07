@@ -9,6 +9,7 @@ using { /Verse.org/Colors }
 using { /Fortnite.com/Characters }
 
 using. KontTags.Gameplay
+using. KontUtils.ForGameplay
 
 # Designed to cause damage to players when they enter the volume
 damage_volume_component<public> := class<final_super>(component):
@@ -18,13 +19,7 @@ damage_volume_component<public> := class<final_super>(component):
     var EnteredEntities : []entity = array{}
 
     @editable
-    DamageInterval : float = 0.5
-
-    @editable
-    DamageAmount : float = 5.0
-
-    @editable
-    IsPeriodic : logic = true
+    DamageParams : damage_params = damage_params{}
 
     GetFortCharacter(InEntity:entity)<decides><reads>:fort_character=
         FortChars :[]fort_character = for:
@@ -43,22 +38,22 @@ damage_volume_component<public> := class<final_super>(component):
                 ?Radius := 50.0)
 
     OnEntityEntered(InEntity:entity):void=
-        if (IsPeriodic?):
+        if (DamageParams.IsPeriodic?):
             if (GetFortCharacter[InEntity]):
                 set EnteredEntities += array{InEntity}
         else:
-            CauseDamage(InEntity, DamageAmount)
+            CauseDamage(InEntity, DamageParams.DamageAmount)
 
     OnEntityExited(InEntity:entity):void=
-        if (not IsPeriodic?). return
+        if (not DamageParams.IsPeriodic?). return
         set EnteredEntities = for (EnteredEntity : EnteredEntities, EnteredEntity <> InEntity) do EnteredEntity
 
     DamageLoop()<suspends>:void=
         loop:
             for (EnteredEntity : EnteredEntities):
-                CauseDamage(EnteredEntity, DamageAmount)
+                CauseDamage(EnteredEntity, DamageParams.DamageAmount)
             
-            Sleep(DamageInterval)
+            Sleep(DamageParams.DamageInterval)
 
     OnSimulate<override>()<suspends>:void=
         DamageLoop()

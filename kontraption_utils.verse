@@ -1,4 +1,19 @@
 
+KontUtils<public> := module:
+
+    ForGameplay<public> := module:
+        using { /Verse.org/Simulation }
+
+        damage_params<public> := struct<concrete>:
+            @editable
+            DamageInterval:float = 0.5
+
+            @editable
+            DamageAmount:float = 5.0
+
+            @editable
+            IsPeriodic:logic = true
+
 KontTags<public> := module:
     using { /Verse.org/Simulation/Tags }
 
