@@ -17,7 +17,6 @@ debug_manager_component<public> := class<final_super>(component):
             return DrawComp
         
         NewDrawComp := debug_draw_component{ Entity := InEntity }
-        set NewDrawComp.DrawColor = NamedColors.White
         InEntity.AddComponents(array{NewDrawComp})
         NewDrawComp
 
