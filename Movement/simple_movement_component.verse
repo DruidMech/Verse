@@ -20,10 +20,20 @@ simple_movement_component<public> := class<final_super>(component):
     @editable
     PlayOnSimulate:logic = true
 
-    Play():void=
+    @editable
+    OnlyPlaysOnce:logic = false
+
+    var CanPlay:logic = true
+
+    Play<public>():void=
+        if (not CanPlay?). return
+
         if (KFMC := Entity.GetComponent[keyframed_movement_component]):
             KFMC.SetKeyframes(Keyframes, PlaybackMode)
             KFMC.Play()
+
+            if (OnlyPlaysOnce?):
+                set CanPlay = false
 
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
