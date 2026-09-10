@@ -1,9 +1,21 @@
 
-activatable<public> := interface:
-    Activate<public>():void
-
 KontUtils<public> := module:
 
+    # Related to the activatable interface
+    Activatables<public> := module:
+        using { /Verse.org/SceneGraph }
+
+        activatable<public> := interface:
+            Activate<public>():void
+
+        (InEntity:entity).FindDescendantActivatables<public>()<transacts>:[]activatable=
+            for:
+                Comp : InEntity.FindDescendantComponents(component)
+                Activatable := activatable[Comp]
+            do:
+                Activatable
+
+    # Related to gameplay mechanics
     ForGameplay<public> := module:
         using { /Verse.org/Simulation }
 

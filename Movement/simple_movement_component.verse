@@ -6,6 +6,8 @@ using { /Verse.org/SceneGraph }
 using { /Verse.org/Simulation }
 using { /Verse.org/SceneGraph/KeyframedMovement }
 
+using. KontUtils.Activatables
+
 <#>
     Placed on an entity to move it.
     Must be on the entity we wish to move (the one with the mesh, etc.)
