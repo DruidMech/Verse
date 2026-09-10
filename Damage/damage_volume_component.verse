@@ -10,6 +10,7 @@ using { /Fortnite.com/Characters }
 
 using. KontTags.Gameplay
 using. KontUtils.ForGameplay
+using. KontUtils.ForFortnite
 
 # Designed to cause damage to players when they enter the volume
 damage_volume_component<public> := class<final_super>(component):
@@ -21,14 +22,9 @@ damage_volume_component<public> := class<final_super>(component):
     @editable
     DamageParams : damage_params = damage_params{}
 
-    GetFortCharacter(InEntity:entity)<decides><reads>:fort_character=
-        FortChars :[]fort_character = for:
-            Comp : InEntity.GetComponents()
-            FortChar := fort_character[Comp]
-        FortChars at 0
 
     CauseDamage(InEntity:entity, InDamage:float):void=
-        if (FortChar := GetFortCharacter[InEntity]):
+        if (FortChar := InEntity.FindFortCharacter[]):
             FortChar.Damage(InDamage)
             DebugDraw.DrawSphere(
                 InEntity.GetGlobalTransform().Translation,
@@ -39,7 +35,7 @@ damage_volume_component<public> := class<final_super>(component):
 
     OnEntityEntered(InEntity:entity):void=
         if (DamageParams.IsPeriodic?):
-            if (GetFortCharacter[InEntity]):
+            if (InEntity.FindFortCharacter[]):
                 set EnteredEntities += array{InEntity}
         else:
             CauseDamage(InEntity, DamageParams.DamageAmount)

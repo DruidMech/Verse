@@ -1,6 +1,18 @@
 
 KontUtils<public> := module:
 
+    # For Fortnite-specific utilities
+    ForFortnite<public> := module:
+        using { /Verse.org/SceneGraph }
+        using { /Fortnite.com/Characters }
+
+        (InEntity:entity).FindFortCharacter<public>()<decides><reads>:fort_character=
+            first:
+                Comp : InEntity.GetComponents()
+                FortChar := fort_character[Comp]
+            do:
+                FortChar
+
     # Related to the activatable interface
     Activatables<public> := module:
         using { /Verse.org/SceneGraph }
