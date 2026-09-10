@@ -1,4 +1,7 @@
 
+activatable<public> := interface:
+    Activate<public>():void
+
 KontUtils<public> := module:
 
     ForGameplay<public> := module:

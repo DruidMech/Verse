@@ -9,7 +9,7 @@ using { /Verse.org/SceneGraph/KeyframedMovement }
 <#>
     Placed on an entity to move it.
     Must be on the entity we wish to move (the one with the mesh, etc.)
-simple_movement_component<public> := class<final_super>(component):
+simple_movement_component<public> := class<final_super>(component, activatable):
 
     @editable
     Keyframes:[]keyframed_movement_delta = array{}
@@ -24,6 +24,8 @@ simple_movement_component<public> := class<final_super>(component):
     OnlyPlaysOnce:logic = false
 
     var CanPlay:logic = true
+
+    Activate<override>():void = Play()
 
     Play<public>():void=
         if (not CanPlay?). return

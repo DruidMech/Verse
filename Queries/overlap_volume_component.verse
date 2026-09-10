@@ -9,17 +9,20 @@ using. KontTags.Gameplay
 using. Movement
 
 <#>
-    Detects an overlap, finds a simple_movement_component 
-    on a descendant entity, then calls Play() on it.
-        * Later we will decouple this class from simple_movement_component
-    Must have a descendant with a mesh_component
-        * Owner of the mesh_component needs the overlap_volume tag
-    Must have a descendant with a simple_movement_component *(subject to change)
+    Detects an overlap, then finds all activatables on descendants,
+    calling their Activate() function.
 overlap_volume_component<public> := class<final_super>(component):
 
+    FindDescendantActivatables()<transacts>:[]activatable=
+        for:
+            Comp : Entity.FindDescendantComponents(component)
+            Activatable := activatable[Comp]
+        do:
+            Activatable
+
     OnEntityEntered(InEntity:entity):void=
-        for (Comp : Entity.FindDescendantComponents(simple_movement_component)):
-            Comp.Play()
+        for (Activatable : FindDescendantActivatables()):
+            Activatable.Activate()
         
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
