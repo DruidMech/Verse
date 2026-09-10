@@ -14,10 +14,18 @@ using. KontUtils.Activatables
     calling their Activate() function.
 overlap_volume_component<public> := class<final_super>(component):
 
+    @editable
+    ActivatableEntities : []entity = array{}
 
     OnEntityEntered(InEntity:entity):void=
         for (Activatable : Entity.FindDescendantActivatables()):
             Activatable.Activate()
+
+        for:
+            ActEnt : ActivatableEntities
+            Act : ActEnt.FindDescendantActivatables()
+        do:
+            Act.Activate()
 
     OnBeginSimulation<override>():void =
         (super:)OnBeginSimulation()
