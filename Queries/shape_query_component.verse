@@ -5,6 +5,7 @@ using { /UnrealEngine.com/Temporary/Diagnostics }
 using { /Verse.org/Colors }
 
 using. KontUtils.Activatables
+using. KontUtils.ForEvents
 
 shape_query_component<public> := class<final_super>(component, activatable):
 
@@ -24,6 +25,11 @@ shape_query_component<public> := class<final_super>(component, activatable):
             HitEntity := HitComp.Entity
             HitLoc := HitEntity.GetGlobalTransform().Translation
         do:
+            QueryHitEvent:query_hit_event = query_hit_event:
+                Hit := option{ Hit }
+
+            Entity.SendUp(QueryHitEvent)
+
             DebugDraw.DrawBox(
                 Entity.GetGlobalTransform().Translation,
                 Entity.GetGlobalTransform().Rotation,
@@ -34,13 +40,6 @@ shape_query_component<public> := class<final_super>(component, activatable):
                 ?Duration := 1.0
             )
 
-            DebugDraw.DrawSphere(
-                HitLoc,
-                ?Radius := 35.0,
-                ?Color := NamedColors.DarkRed,
-                ?DrawDurationPolicy := debug_draw_duration_policy.FiniteDuration,
-                ?Duration := 1.0
-            )
 
 
         
